@@ -1,10 +1,6 @@
 # output-shape 
 
-<p align="center">
-  <a href="https://badge.fury.io/py/output-shape">
-    <img src="https://badge.fury.io/py/output-shape.svg" alt="PyPI version">
-  </a>
-</p>
+[![PyPI version](https://badge.fury.io/py/output-shape.svg)](https://badge.fury.io/py/output-shape)
 
 A very lightweight and minimalistic output shape examiner of layers and models.
 
