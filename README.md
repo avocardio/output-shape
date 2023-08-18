@@ -1,7 +1,7 @@
 # output-shape 
 
 <p align="center">
-  <a href="https://badge.fury.io/py/output-shape.svg">
+  <a href="https://badge.fury.io/py/output-shape">
     <img src="https://badge.fury.io/py/output-shape.svg" alt="PyPI version">
   </a>
 </p>
