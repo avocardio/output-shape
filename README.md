@@ -17,7 +17,7 @@ You need to decorate the forward method of your model with the decorator and add
 
 ```python
 import torch
-import output_shape
+from output_shape import output_shape
 
 class Model(torch.nn.Module):
     def __init__(self, debug=False):
