@@ -4,7 +4,7 @@
 
 A very lightweight and minimalistic output shape examiner of layers and models.
 
-** Currently working for PyTorch models only. **
+** Currently working for PyTorch models only. Keras / Jax soon! **
 
 # Installation
 ```bash
