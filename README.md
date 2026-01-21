@@ -13,22 +13,24 @@ pip install output-shape
 
 # Usage
 
-You need to decorate the forward method of your model with the decorator and add a debug flag to the init of your model.
+Decorate the forward method with `@output_shape`, then use the context manager:
 
 ```python
 import torch
-from output_shape import output_shape
+from output_shape import output_shape, debug_shapes
 
 class Model(torch.nn.Module):
-    def __init__(self, debug=False):
-        self.debug = debug
+    def __init__(self):
+        super().__init__()
         ...
 
     @output_shape
     def forward(self, x):
         ...
 
-model = Model(debug=True)(torch.randn(2, 1, 128, 128))
+model = Model()
+with debug_shapes():
+    model(torch.randn(2, 1, 128, 128))
 ```
 
 ```python
