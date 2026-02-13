@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
   name='output-shape',
-  version='0.0.3',
+  version='0.0.4',
   description='A very lightweight and minimalistic output shape examiner of layers and models.',
   long_description=open('README.md').read()[:2000],
   author='avocardio',
