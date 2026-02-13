@@ -1,10 +1,8 @@
-# output-shape 
+# output-shape
 
 [![PyPI version](https://badge.fury.io/py/output-shape.svg)](https://badge.fury.io/py/output-shape)
 
-A very lightweight and minimalistic output shape examiner of layers and models.
-
-** Currently working for PyTorch models only. Keras / Jax soon! **
+A very lightweight and minimalistic output shape debugger for PyTorch models. Shows module paths, output shapes, and dtypes for every layer during a forward pass.
 
 # Installation
 ```bash
@@ -29,55 +27,52 @@ class Model(torch.nn.Module):
     def forward(self, x):
         ...
 
-# Option 1: Context manager
+# Option 1: Context manager (recommended)
 model = Model()
 with debug_shapes():
-    model(torch.randn(2, 1, 128, 128))
+    model(torch.randn(2, 3, 32, 32))
 
 # Option 2: Instance flag
 model = Model(debug=True)
-model(torch.randn(2, 1, 128, 128))
+model(torch.randn(2, 3, 32, 32))
 ```
 
+Example output for a tiny ViT:
+```
+Input                                   (2, 3, 32, 32)                float32
+patch_embed                             (2, 128, 8, 8)                float32
+blocks.0.norm1                          (2, 64, 128)                  float32
+blocks.0.attn.qkv                       (2, 64, 384)                  float32
+blocks.0.attn.proj                      (2, 64, 128)                  float32
+blocks.0.attn                           (2, 64, 128)                  float32
+blocks.0.norm2                          (2, 64, 128)                  float32
+blocks.0.mlp.0                          (2, 64, 512)                  float32
+blocks.0.mlp.1                          (2, 64, 512)                  float32
+blocks.0.mlp.2                          (2, 64, 128)                  float32
+blocks.0.mlp                            (2, 64, 128)                  float32
+blocks.0                                (2, 64, 128)                  float32
+blocks.1.norm1                          (2, 64, 128)                  float32
+blocks.1.attn.qkv                       (2, 64, 384)                  float32
+blocks.1.attn.proj                      (2, 64, 128)                  float32
+blocks.1.attn                           (2, 64, 128)                  float32
+blocks.1.norm2                          (2, 64, 128)                  float32
+blocks.1.mlp.0                          (2, 64, 512)                  float32
+blocks.1.mlp.1                          (2, 64, 512)                  float32
+blocks.1.mlp.2                          (2, 64, 128)                  float32
+blocks.1.mlp                            (2, 64, 128)                  float32
+blocks.1                                (2, 64, 128)                  float32
+blocks                                  (2, 64, 128)                  float32
+norm                                    (2, 128)                      float32
+head                                    (2, 10)                       float32
+```
+
+# Programmatic Access
+
+Use `debug_shapes()` as a context manager to capture shapes as structured data:
+
 ```python
-Input                           torch.Size([2, 1, 128, 128])
-Conv2d                          torch.Size([2, 768, 8, 8])
-PatchEmbed                      torch.Size([2, 64, 768])
-LayerNorm                       torch.Size([2, 13, 768])
-Linear                          torch.Size([2, 13, 2304])
-Linear                          torch.Size([2, 13, 768])
-Dropout                         torch.Size([2, 13, 768])
-Attention                       torch.Size([2, 13, 768])
-PreNorm                         torch.Size([2, 13, 768])
-LayerNorm                       torch.Size([2, 13, 768])
-Linear                          torch.Size([2, 13, 3072])
-GELU                            torch.Size([2, 13, 3072])
-Dropout                         torch.Size([2, 13, 3072])
-Linear                          torch.Size([2, 13, 768])
-Dropout                         torch.Size([2, 13, 768])
-FeedForward                     torch.Size([2, 13, 768])
-PreNorm                         torch.Size([2, 13, 768])
-Transformer                     torch.Size([2, 13, 768])
-LayerNorm                       torch.Size([2, 13, 768])
-Linear                          torch.Size([2, 12, 512])
-LayerNorm                       torch.Size([2, 8, 8, 512])
-CyclicShift                     torch.Size([2, 8, 8, 512])
-Linear                          torch.Size([2, 8, 8, 2016])
-Linear                          torch.Size([2, 8, 8, 512])
-CyclicShift                     torch.Size([2, 8, 8, 512])
-WindowAttention                 torch.Size([2, 8, 8, 512])
-PreNorm                         torch.Size([2, 8, 8, 512])
-Residual                        torch.Size([2, 8, 8, 512])
-LayerNorm                       torch.Size([2, 8, 8, 512])
-Linear                          torch.Size([2, 8, 8, 2048])
-GELU                            torch.Size([2, 8, 8, 2048])
-Dropout                         torch.Size([2, 8, 8, 2048])
-Linear                          torch.Size([2, 8, 8, 512])
-Dropout                         torch.Size([2, 8, 8, 512])
-FeedForward                     torch.Size([2, 8, 8, 512])
-PreNorm                         torch.Size([2, 8, 8, 512])
-Residual                        torch.Size([2, 8, 8, 512])
-SwinBlock                       torch.Size([2, 8, 8, 512])
-LayerNorm                       torch.Size([2, 64, 512])
-Linear                          torch.Size([2, 64, 256])
+with debug_shapes(print_shapes=False) as shapes:
+    model(torch.randn(2, 3, 32, 32))
+
+# shapes = [("patch_embed", (2, 128, 8, 8), "float32"), ...]
 ```
